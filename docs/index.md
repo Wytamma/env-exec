@@ -5,6 +5,9 @@ title: Home
 
 [![PyPI - Version](https://img.shields.io/pypi/v/env-exec.svg)](https://pypi.org/project/env-exec)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/env-exec.svg)](https://pypi.org/project/env-exec)
+[![write-the - docs](https://badgen.net/badge/write-the/docs/blue?icon=https://raw.githubusercontent.com/Wytamma/write-the/master/images/write-the-icon.svg)](https://write-the.wytamma.com/)
+[![write-the - test](https://badgen.net/badge/write-the/tests/green?icon=https://raw.githubusercontent.com/Wytamma/write-the/master/images/write-the-icon.svg)](https://github.com/Wytamma/env-exec/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/Wytamma/env-exec/graph/badge.svg?token=pJrbeNAbp9)](https://codecov.io/gh/Wytamma/env-exec)
 
 ## Overview
 
