@@ -16,6 +16,7 @@ class CondaEnv(Env):
         name: Optional[str] = None,
         *,
         dependencies: Optional[List[str]] = None,
+        channels: Optional[List[str]] = None,
         force: bool = False,
         check: bool = True,
         clean_up: bool = False,
@@ -44,6 +45,7 @@ class CondaEnv(Env):
             clean_up = True
         self.name = name
         self.dependencies = dependencies
+        self.channels = channels
         self.force = force
         self.check = check
         self.clean_up = clean_up
@@ -113,9 +115,14 @@ class CondaEnv(Env):
         Returns:
             CompletedProcess: The CompletedProcess object of the command.
         """
+        cmd = [self.manager, "create", "--name", self.name]
+        if self.channels:
+            for channel in self.channels:
+                cmd += ["-c", channel]
+        cmd += [*self.dependencies, "--yes"]
         try:
             return subprocess.run(
-                [self.manager, "create", "--name", self.name, *self.dependencies, "--yes"],
+                cmd,
                 check=True,
                 capture_output=capture_output,
                 text=True,
@@ -139,8 +146,13 @@ class CondaEnv(Env):
         """
         if isinstance(package, str):
             package = [package]
+        cmd = [self.manager, "install", "--name", self.name]
+        if self.channels:
+            for channel in self.channels:
+                cmd += ["-c", channel]
+        cmd += [*self.dependencies, "--yes"]
         return subprocess.run(
-            [self.manager, "install", "--name", self.name, *package, "--yes"],
+            cmd,
             check=True,
             capture_output=capture_output,
             text=True,
