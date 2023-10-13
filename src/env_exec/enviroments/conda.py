@@ -118,7 +118,7 @@ class CondaEnv(Env):
         cmd = [self.manager, "create", "--name", self.name]
         if self.channels:
             for channel in self.channels:
-                cmd += ["-c", channel]
+                cmd += ["--channel", channel]
         cmd += [*self.dependencies, "--yes"]
         try:
             return subprocess.run(
@@ -149,7 +149,7 @@ class CondaEnv(Env):
         cmd = [self.manager, "install", "--name", self.name]
         if self.channels:
             for channel in self.channels:
-                cmd += ["-c", channel]
+                cmd += ["--channel", channel]
         cmd += [*self.dependencies, "--yes"]
         try:
             return subprocess.run(
@@ -240,7 +240,7 @@ class CondaEnv(Env):
         """
         try:
             return subprocess.run(
-                [self.manager, "run", "--name", self.name, "bash", "-c", command],
+                [self.manager, "run", "--name", self.name, "bash", "--channel", command],
                 check=True,
                 capture_output=capture_output,
                 text=True,

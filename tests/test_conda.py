@@ -91,3 +91,13 @@ def test_conda_env_exit(conda_env, mock_subprocess_run):
         with conda_env:
             pass
     assert mock_subprocess_run.call_count == 3
+
+def test_conda_env_channels(conda_env, mock_subprocess_run):
+    conda_env.channels = ["conda-forge"]
+    conda_env.create()
+    mock_subprocess_run.assert_called_once_with(
+        ["conda", "create", "--name", "test_env", "--channel", "conda-forge", "numpy", "pandas=2.0.0", "--yes"],
+        capture_output=False,
+        check=True,
+        text=True,
+    )
