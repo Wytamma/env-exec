@@ -4,7 +4,7 @@ import uuid
 from typing import List, Optional
 
 from env_exec.enviroments.env import Env
-from env_exec.errors import CreateEnvError, ExecError, MissingDependencyError
+from env_exec.errors import CreateEnvError, ExecError, InstallPackageError, MissingDependencyError
 
 
 class CondaEnv(Env):
@@ -151,12 +151,18 @@ class CondaEnv(Env):
             for channel in self.channels:
                 cmd += ["-c", channel]
         cmd += [*self.dependencies, "--yes"]
-        return subprocess.run(
-            cmd,
-            check=True,
-            capture_output=capture_output,
-            text=True,
-        )
+        try:
+            return subprocess.run(
+                cmd,
+                check=True,
+                capture_output=capture_output,
+                text=True,
+            )
+        except subprocess.CalledProcessError:
+            msg = "\n\n---"
+            msg += f"\n\nError Installing Package(s): \nconda install --name {self.name} {' '.join(package)}"
+            msg += "\n(look at the top of the traceback above for more information)"
+            raise InstallPackageError(msg) from None
 
     def delete(self, *, capture_output: bool = False):
         """
