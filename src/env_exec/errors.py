@@ -106,3 +106,28 @@ class InstallPackageError(EnvExecError):
         """
         self.message = message
         super().__init__(self.message)
+
+# ManagerNotAvailable
+class ManagerNotAvailable(EnvExecError):
+    """Exception raised for errors in the execution of a command.
+
+    Attributes:
+        message -- explanation of the error
+    """
+
+    def __init__(self, message):
+        """
+        Initializes a ManagerNotAvailable object.
+
+        Args:
+            message (str): Explanation of the error.
+
+        Returns:
+            ManagerNotAvailable: A ManagerNotAvailable object.
+
+        Examples:
+            >>> raise ManagerNotAvailable('Manager not available.')
+            ManagerNotAvailable: Manager not available.
+        """
+        self.message = message
+        super().__init__(self.message)
