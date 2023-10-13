@@ -259,7 +259,7 @@ class CondaEnv(Env):
         """
         try:
             return subprocess.run(
-                [self.manager, "run", "--name", self.name, "bash", "--channel", command],
+                [self.manager, "run", "--name", self.name, "bash", "-c", command],
                 check=True,
                 capture_output=capture_output,
                 text=True,
