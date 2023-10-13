@@ -69,7 +69,7 @@ def test_conda_env_exec_error(conda_env, mock_subprocess_run):
 
 @pytest.mark.parametrize(
     "force,exists,expected_calls",
-    [(True, False, 3), (False, True, 2), (False, False, 2)],
+    [(True, False, 4), (False, True, 3), (False, False, 3)],
 )
 def test_conda_env_enter(force, exists, expected_calls, conda_env, mock_subprocess_run):
     conda_env.force = force
@@ -90,7 +90,7 @@ def test_conda_env_exit(conda_env, mock_subprocess_run):
         mock_exists.return_value.stdout = json.dumps({"envs": ["/path/to/test_env"]})
         with conda_env:
             pass
-    assert mock_subprocess_run.call_count == 3
+    assert mock_subprocess_run.call_count == 4
 
 def test_conda_env_channels(conda_env, mock_subprocess_run):
     conda_env.channels = ["conda-forge"]
