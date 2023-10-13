@@ -101,3 +101,7 @@ def test_conda_env_channels(conda_env, mock_subprocess_run):
         check=True,
         text=True,
     )
+
+def test_conda_env_available(conda_env, mock_subprocess_run):
+    mock_subprocess_run.return_value.stdout = "conda 4.9.2"
+    assert conda_env.available

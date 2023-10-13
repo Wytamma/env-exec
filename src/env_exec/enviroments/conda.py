@@ -4,7 +4,7 @@ import uuid
 from typing import List, Optional
 
 from env_exec.enviroments.env import Env
-from env_exec.errors import CreateEnvError, ExecError, InstallPackageError, MissingDependencyError
+from env_exec.errors import CreateEnvError, ExecError, InstallPackageError, ManagerNotAvailable, MissingDependencyError
 
 
 class CondaEnv(Env):
@@ -22,7 +22,7 @@ class CondaEnv(Env):
         clean_up: bool = False,
         install_missing: bool = False,
         capture_output: bool = False,
-        mamba: bool = False,
+        manager: str = "conda",
     ):
         """
         Initializes a Conda environment.
@@ -51,7 +51,7 @@ class CondaEnv(Env):
         self.clean_up = clean_up
         self.capture_output = capture_output
         self.install_missing = install_missing
-        self.manager = "mamba" if mamba else "conda"
+        self.manager = manager
         self.output = None
 
     def __enter__(self):
@@ -64,6 +64,9 @@ class CondaEnv(Env):
         Raises:
             MissingDependencyError: If check is True and there are missing dependencies and install_missing is False.
         """
+        if not self.available:
+            msg = f"{self.manager} is not available"
+            raise ManagerNotAvailable(msg)
         if self.force or not self.exists:
             self.output = self.create(capture_output=self.capture_output)
         if self.check:
@@ -104,6 +107,22 @@ class CondaEnv(Env):
         )
         env_data = json.loads(completed_process.stdout)
         return self.name in [env.split("/")[-1] for env in env_data["envs"]]
+
+    @property
+    def available(self):
+        """
+        Check if manager (conda) is available.
+        """
+        try:
+            subprocess.run(
+                [self.manager, "--version"],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            return True
+        except subprocess.CalledProcessError:
+            return False
 
     def create(self, *, capture_output: bool = False):
         """

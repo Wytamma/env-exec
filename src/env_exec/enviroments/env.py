@@ -41,11 +41,22 @@ class Env(metaclass=ABCMeta):
         """
         pass
 
+    @property
+    @abstractmethod
+    def available(self):
+        """
+        Check if the env manager is available.
+
+        Returns:
+            bool: True if the environment exists, False otherwise.
+        """
+        pass
+
     @abstractmethod
     def exec(self, command: str):
         """
         Execute a command in the environment.
-        
+
         Args:
             command (str): The command to execute.
         """
