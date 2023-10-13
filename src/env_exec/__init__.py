@@ -2,3 +2,4 @@
 #
 # SPDX-License-Identifier: MIT
 from env_exec.enviroments.conda import CondaEnv
+from env_exec.enviroments.mamba import MambaEnv
