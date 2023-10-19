@@ -26,6 +26,9 @@ classifiers = [
 ]
 dependencies = []
 
+[project.scripts]
+env-exec = "env_exec.cli:cli"
+
 [project.urls]
 Documentation = "https://github.com/unknown/env-exec#readme"
 Issues = "https://github.com/unknown/env-exec/issues"
