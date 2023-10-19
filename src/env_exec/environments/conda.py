@@ -1,9 +1,9 @@
 import json
 import subprocess
 import uuid
-from typing import List, Optional
+from typing import List, Optional, Union
 
-from env_exec.enviroments.env import Env
+from env_exec.environments.env import Env
 from env_exec.errors import CreateEnvError, ExecError, InstallPackageError, ManagerNotAvailable, MissingDependencyError
 
 
@@ -152,7 +152,7 @@ class CondaEnv(Env):
             msg += "\n(look at the top of the traceback above for more information)"
             raise CreateEnvError(msg) from None
 
-    def install(self, package: List[str] | str, *, capture_output: bool = False):
+    def install(self, package: Union[List[str], str], *, capture_output: bool = False):
         """
         Installs a package(s) in the environment.
 
