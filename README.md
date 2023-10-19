@@ -16,7 +16,7 @@ The `env-exec` library is a versatile Python utility designed for managing compu
 pip install env-exec
 ```
 
-## Usage
+## Usage as a libary
 
 Create an ephemeral Conda environment with dependencies installed.
 
@@ -57,6 +57,32 @@ Install dependencies if they are missing.
 ```python
 with CondaEnv('my-env', dependencies=['python', 'numpy'], install_missing=True) as env:
     env.exec('python -c "import numpy"')
+```
+
+## Usage as a CLI
+
+```console
+$ env-exec -d python=3.12.0 mamba python -V
+Python 3.12.0
+```
+
+```text
+usage: env-exec [-h] [-n NAME] [-d DEPENDENCY] [-c CHANNEL] [-v] {conda,mamba,docker} ...
+
+cli for executing commands in a virtual environment
+
+positional arguments:
+  {conda,mamba,docker}  The package manager to use.
+  command               The command to execute.
+
+options:
+  -h, --help            show this help message and exit
+  -n NAME, --name NAME  The name of the environment.
+  -d DEPENDENCY, --dependency DEPENDENCY
+                        The dependencies to install.
+  -c CHANNEL, --channel CHANNEL
+                        Channel to use.
+  -v, --verbose         If True, the output of the commands will be captured.
 ```
 
 ## Features
