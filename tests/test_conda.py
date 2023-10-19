@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 
-from env_exec.enviroments.conda import CondaEnv
+from env_exec.environments.conda import CondaEnv
 from env_exec.errors import ExecError
 
 

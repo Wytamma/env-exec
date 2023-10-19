@@ -1,6 +1,6 @@
 import pytest
 
-from env_exec.enviroments.mamba import MambaEnv
+from env_exec.environments.mamba import MambaEnv
 
 
 @pytest.fixture

@@ -1,4 +1,4 @@
-from env_exec.enviroments.conda import CondaEnv
+from env_exec.environments.conda import CondaEnv
 
 
 class MambaEnv(CondaEnv):
