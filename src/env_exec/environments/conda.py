@@ -70,13 +70,18 @@ class CondaEnv(Env):
         if self.force or not self.exists:
             self.output = self.create(capture_output=self.capture_output)
         if self.check:
-            missing_dependencies = self.get_missing_dependencies()
-            if not missing_dependencies:
-                return self
-            elif self.install_missing:
-                self.install(missing_dependencies, capture_output=self.capture_output)
-            else:
-                raise MissingDependencyError(missing_dependencies)
+            try:
+                missing_dependencies = self.get_missing_dependencies()
+                if not missing_dependencies:
+                    return self
+                elif self.install_missing:
+                    self.install(missing_dependencies, capture_output=self.capture_output)
+                else:
+                    raise MissingDependencyError(missing_dependencies)
+            except Exception as e:
+                self.delete(capture_output=True)
+                raise e
+
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
@@ -148,7 +153,7 @@ class CondaEnv(Env):
             )
         except subprocess.CalledProcessError:
             msg = "\n\n---"
-            msg += f"\n\nError Creating Environment: \nconda create --name {self.name} {' '.join(self.dependencies)}"
+            msg += f"\n\nError Creating Environment: \n{self.manager} create --name {self.name} {' '.join(self.dependencies)}"
             msg += "\n(look at the top of the traceback above for more information)"
             raise CreateEnvError(msg) from None
 
@@ -179,7 +184,7 @@ class CondaEnv(Env):
             )
         except subprocess.CalledProcessError:
             msg = "\n\n---"
-            msg += f"\n\nError Installing Package(s): \nconda install --name {self.name} {' '.join(package)}"
+            msg += f"\n\nError Installing Package(s): \n{self.manager} install --name {self.name} {' '.join(package)}"
             msg += "\n(look at the top of the traceback above for more information)"
             raise InstallPackageError(msg) from None
 
@@ -231,6 +236,7 @@ class CondaEnv(Env):
             except ValueError:
                 name = dependency
                 version = None
+            name = name[4:] if name.startswith("pip:") else name
             if name in installed_packages:
                 if version and version != installed_packages[name]:
                     missing.append(dependency)
@@ -238,13 +244,14 @@ class CondaEnv(Env):
                 missing.append(dependency)
         return missing
 
-    def exec(self, command: str, *, capture_output: bool = False):
+    def exec(self, command: str, *, capture_output: bool = False, isolate: bool = True):
         """
         Executes a command in the environment.
 
         Args:
             command (str): The command to execute.
             capture_output (bool, optional): If True, the output of the commands will be captured.
+            isolate (bool, optional): If True, the command will be executed in a isolated shell.
 
         Returns:
             CompletedProcess: The CompletedProcess object of the command.
@@ -255,11 +262,21 @@ class CondaEnv(Env):
         Examples:
             >>> with CondaEnv(name="my_env") as env:
             ...   env.exec("echo 'Hello World!'")
-            CompletedProcess(args=['conda', 'run', '--name', 'my_env', 'bash', '-c', 'echo 'Hello World!'], returncode=0, stdout='Hello World!\\n', stderr='')
+            Hello World!
         """
+        path = ""
+        if isolate:
+            completed_process = subprocess.run(
+                [self.manager, "info", "--envs"], capture_output=True, text=True, check=True
+            )
+            for line in completed_process.stdout.split("\n"):
+                if line.startswith(self.name):
+                    env_path = line.split()[-1]
+                    path = f"PATH={env_path}/bin {command}"
+                    break
         try:
             return subprocess.run(
-                [self.manager, "run", "--name", self.name, "bash", "-c", command],
+                [self.manager, "run", "--name", self.name, path, command],
                 check=True,
                 capture_output=capture_output,
                 text=True,
