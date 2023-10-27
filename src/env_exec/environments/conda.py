@@ -244,7 +244,7 @@ class CondaEnv(Env):
                 missing.append(dependency)
         return missing
 
-    def exec(self, command: str, *, capture_output: bool = False, isolate: bool = True):
+    def exec(self, command: str, *, capture_output: bool = False, isolate: bool = False):
         """
         Executes a command in the environment.
 
@@ -264,7 +264,6 @@ class CondaEnv(Env):
             ...   env.exec("echo 'Hello World!'")
             Hello World!
         """
-        path = ""
         if isolate:
             completed_process = subprocess.run(
                 [self.manager, "info", "--envs"], capture_output=True, text=True, check=True
@@ -272,11 +271,11 @@ class CondaEnv(Env):
             for line in completed_process.stdout.split("\n"):
                 if line.startswith(self.name):
                     env_path = line.split()[-1]
-                    path = f"PATH={env_path}/bin {command}"
+                    command = f"PATH={env_path}/bin {command}"
                     break
         try:
             return subprocess.run(
-                [self.manager, "run", "--name", self.name, path, command],
+                [self.manager, "run", "--live-stream", "--name", self.name, "bash", "-c", command],
                 check=True,
                 capture_output=capture_output,
                 text=True,
