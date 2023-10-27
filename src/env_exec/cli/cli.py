@@ -48,6 +48,12 @@ class CLI:
             action="store_true",
         )
         parser.add_argument(
+            "-i",
+            "--isolate",
+            help="If True, the command will be isolated from the system environment.",
+            action="store_true",
+        )
+        parser.add_argument(
             "command",
             help="The command to execute.",
             nargs=argparse.REMAINDER,
@@ -59,6 +65,7 @@ class CLI:
         self.channels = args.channel
         self.command = args.command
         self.verbose = args.verbose
+        self.isolate = args.isolate
 
     def __call__(self):
         self.parse_args()
@@ -85,4 +92,4 @@ class CLI:
             msg = f"Unknown package manager: {self.manager}"
             raise ValueError(msg)
         with env:
-            env.exec(" ".join(self.command))
+            env.exec(" ".join(self.command), isolate=self.isolate)
