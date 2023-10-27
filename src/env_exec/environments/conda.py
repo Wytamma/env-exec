@@ -79,7 +79,8 @@ class CondaEnv(Env):
                 else:
                     raise MissingDependencyError(missing_dependencies)
             except Exception as e:
-                self.delete(capture_output=True)
+                if self.clean_up:
+                    self.delete(capture_output=True)
                 raise e
 
         return self
@@ -174,7 +175,7 @@ class CondaEnv(Env):
         if self.channels:
             for channel in self.channels:
                 cmd += ["--channel", channel]
-        cmd += [*self.dependencies, "--yes"]
+        cmd += [*package, "--yes"]
         try:
             return subprocess.run(
                 cmd,

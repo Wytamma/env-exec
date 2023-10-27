@@ -54,6 +54,12 @@ class CLI:
             action="store_true",
         )
         parser.add_argument(
+            "-m",
+            "--install-missing",
+            help="If True, missing dependencies will be installed.",
+            action="store_true",
+        )
+        parser.add_argument(
             "command",
             help="The command to execute.",
             nargs=argparse.REMAINDER,
@@ -66,6 +72,7 @@ class CLI:
         self.command = args.command
         self.verbose = args.verbose
         self.isolate = args.isolate
+        self.install_missing = args.install_missing
 
     def __call__(self):
         self.parse_args()
@@ -77,6 +84,7 @@ class CLI:
                 dependencies=self.dependencies,
                 channels=self.channels,
                 capture_output=self.capture_output,
+                install_missing=self.install_missing,
             )
         elif self.manager == "mamba":
             env = MambaEnv(
@@ -84,7 +92,11 @@ class CLI:
                 dependencies=self.dependencies,
                 channels=self.channels,
                 capture_output=self.capture_output,
+                install_missing=self.install_missing,
             )
+        elif self.manager == "python":
+            msg = "PythonEnv is not implemented yet."
+            raise NotImplementedError(msg)
         elif self.manager == "docker":
             msg = "DockerEnv is not implemented yet."
             raise NotImplementedError(msg)
