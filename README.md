@@ -1,4 +1,4 @@
-# env-exec
+# env-exec (envx)
 
 [![PyPI - Version](https://img.shields.io/pypi/v/env-exec.svg)](https://pypi.org/project/env-exec)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/env-exec.svg)](https://pypi.org/project/env-exec)
@@ -62,12 +62,12 @@ with CondaEnv('my-env', dependencies=['python', 'numpy'], install_missing=True) 
 ## Usage as a CLI
 
 ```console
-$ env-exec -d python=3.12.0 mamba python -V
+$ envx -d python=3.12.0 mamba python -V
 Python 3.12.0
 ```
 
 ```text
-usage: env-exec [-h] [-n NAME] [-d DEPENDENCY] [-c CHANNEL] [-v] {conda,mamba,docker} ...
+usage: envx [-h] [-n NAME] [-d DEPENDENCY] [-c CHANNEL] [-v] {conda,mamba,docker} ...
 
 cli for executing commands in a virtual environment
 
